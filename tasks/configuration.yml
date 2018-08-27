@@ -7,10 +7,39 @@
     owner: root
     group: root
     mode: 0600
+  when: ansible_os_family == 'Debian'
+
+- name: add docker storage setup
+  template:
+    src: etc/sysconfig/docker-storage-setup.j2
+    dest: '{{ docker_sysconfig_storage_setup }}'
+    owner: root
+    group: root
+    mode: 0600
     seuser: system_u
     serole: object_r
     setype: etc_t
     selevel: s0
+  register: docker_sysconfig_storage_setup_template
+  when: ansible_os_family == 'RedHat'
+
+- name: perform docker storage setup
+  block:
+  - name: stop docker to run storage setup
+    service:
+      name: '{{ docker_service }}'
+      state: stopped
+
+  - name: run docker-storage-setup
+    command: docker-storage-setup
+
+  - name: start docker after storage setup
+    service:
+      name: '{{ docker_service }}'
+      state: started
+  when:
+    - ansible_os_family == 'RedHat'
+    - docker_sysconfig_storage_setup_template.changed
 
 - name: start and enable docker service
   service:
