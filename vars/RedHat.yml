@@ -12,7 +12,7 @@ docker_service: docker
 
 docker_sysconfig_storage_setup: /etc/sysconfig/docker-storage-setup
 
-docker_storage_devices: ~
+docker_storage_device: ~
 
 docker_vg_name: docker-vg
 
