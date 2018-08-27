@@ -12,11 +12,9 @@ docker_service: docker
 
 docker_sysconfig_storage_setup: /etc/sysconfig/docker-storage-setup
 
-docker_storage_device: ~
+docker_vg_name: VGDOCKER
 
-docker_vg_name: docker-vg
-
-docker_lv_name: dockerlv
+docker_lv_name: LVDOCKER
 
 docker_lv_size: 100%FREE
 
