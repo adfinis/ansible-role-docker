@@ -2,7 +2,7 @@
 
 galaxy_info:
   author: 'Adfinis SyGroup AG'
-  description: 'Install docker-ce on a host'
+  description: 'Install docker on a host'
   company: 'Adfinis SyGroup AG'
   license: 'GNU General Public License v3'
   min_ansible_version: '2.4.0'

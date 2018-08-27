@@ -5,21 +5,6 @@
     name: '{{ docker_package_dependencies }}'
     state: present
 
-- name: configure docker-ce rpm key
-  rpm_key:
-    key: '{{ docker_rpm_key }}'
-    state: present
-  when: ansible_os_family == 'RedHat'
-
-- name: add docker-ce yum repository
-  yum_repository:
-    name: docker-ce
-    description: Docker Community Edition
-    baseurl: '{{ docker_rpm_repo }}'
-    gpgcheck: yes
-    gpgkey: '{{ docker_rpm_key }}'
-  when: ansible_os_family == 'RedHat'
-
 - name: configure docker-ce apt key
   apt_key:
     url: '{{ docker_apt_key }}'

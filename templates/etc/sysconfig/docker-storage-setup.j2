@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+DEVS={{ docker_storage_device }}
+VG={{ docker_vg_name }}
+STORAGE_DRIVER=overlay2
+CONTAINER_ROOT_LV_NAME={{ docker_lv_name }}
+CONTAINER_ROOT_LV_SIZE={{ docker_lv_size }}
+CONTAINER_ROOT_LV_MOUNT_PATH={{ docker_lv_mount }}
