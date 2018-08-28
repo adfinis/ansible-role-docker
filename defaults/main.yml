@@ -1,1 +1,4 @@
 ---
+
+# Specify what volume to put the docker vg on EL systems
+docker_storage_device: ~
