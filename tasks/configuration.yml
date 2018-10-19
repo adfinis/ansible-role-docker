@@ -20,7 +20,7 @@
     serole: object_r
     setype: etc_t
     selevel: s0
-  register: docker_sysconfig_storage_setup_template
+  register: docker_register_sysconfig_storage_setup_template
   when: ansible_os_family == 'RedHat'
 
 - name: perform docker storage setup
@@ -39,7 +39,7 @@
       state: started
   when:
     - ansible_os_family == 'RedHat'
-    - docker_sysconfig_storage_setup_template.changed
+    - docker_register_sysconfig_storage_setup_template.changed
 
 - name: start and enable docker service
   service:

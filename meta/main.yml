@@ -1,6 +1,7 @@
 ---
 
 galaxy_info:
+  role_name: docker
   author: 'Adfinis SyGroup AG'
   description: 'Install docker on a host'
   company: 'Adfinis SyGroup AG'
