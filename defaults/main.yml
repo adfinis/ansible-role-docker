@@ -2,3 +2,23 @@
 
 # Specify what volume to put the docker vg on EL systems
 docker_storage_device: ~
+
+# docker daemon remote access
+docker_daemon_remote_access_tls: false
+
+# openssl certs path
+cert_path: /root/ssl_docker
+
+# docker daemon hostname (FQDN)
+common_name: '{{ ansible_fqdn }}'
+
+# docker client hostname
+client_common_name: client
+
+# CA cert informations
+ca_country: CH
+ca_state_or_province: Bern
+ca_locality: Bern
+ca_organization: Adfinis Sygroup
+ca_organizational_unit: SYS
+ca_email_address: root@adfinis-sygroup.ch

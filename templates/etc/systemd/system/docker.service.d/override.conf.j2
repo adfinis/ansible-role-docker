@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd --tlsverify --tlscacert={{ cert_path }}/ca_cert.pem --tlscert={{ cert_path }}/server_cert.pem --tlskey={{ cert_path }}/server_key.pem -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2376

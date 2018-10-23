@@ -1,0 +1,114 @@
+---
+
+- name: create certificate directory structure
+  file:
+    path: "{{ cert_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: create ca private key
+  command: "
+    openssl genrsa
+    -out {{ cert_path }}/ca_key.pem 4096"
+
+- name: create ca certificate
+  command: "
+    openssl req
+    -new
+    -x509
+    -days 365
+    -key {{ cert_path }}/ca_key.pem
+    -out {{ cert_path }}/ca_cert.pem
+    -subj \"/C={{ ca_country }}/ST={{ ca_state_or_province }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizational_unit }}/CN={{ common_name }}/emailAddress={{ ca_email_address }}\""
+
+- name: create server private key
+  command: "
+    openssl genrsa
+    -out {{ cert_path }}/server_key.pem 4096"
+
+- name: create servers certificate signing request
+  command: "
+    openssl req
+    -subj /CN={{ common_name }}
+    -sha256
+    -new
+    -key {{ cert_path }}/server_key.pem
+    -out {{ cert_path }}/server.csr"
+
+- name: write server_extfile
+  shell: "{{ item }}"
+  with_items:
+    - "echo subjectAltName = DNS:{{ common_name }},IP:{{ansible_default_ipv4.address}},IP:127.0.0.1 >> {{ cert_path }}/server_extfile.cnf"
+    - "echo extendedKeyUsage = serverAuth >> {{ cert_path }}/server_extfile.cnf"
+
+- name: create signed server certificate
+  command: "
+    openssl x509
+    -req
+    -days 365
+    -in {{ cert_path }}/server.csr
+    -CA {{ cert_path }}/ca_cert.pem
+    -CAkey {{ cert_path }}/ca_key.pem
+    -CAcreateserial
+    -out {{ cert_path }}/server_cert.pem
+    -extfile {{ cert_path }}/server_extfile.cnf"
+
+- name: create client private key
+  command: "
+    openssl genrsa
+    -out {{ cert_path }}/client_key.pem 4096"
+
+- name: create clients certificate signing request
+  command: "
+    openssl req
+    -subj /CN={{ client_common_name }}
+    -new
+    -key {{ cert_path }}/client_key.pem
+    -out {{ cert_path }}/client.csr"
+
+- name: write client_extfile
+  shell: "{{ item }}"
+  with_items:
+    - "echo extendedKeyUsage = clientAuth >> {{ cert_path }}/client_extfile.cnf"
+
+- name:  create signed server certificate
+  command: "
+    openssl x509
+    -req
+    -days 365
+    -in {{ cert_path }}/client.csr
+    -CA {{ cert_path }}/ca_cert.pem
+    -CAkey {{ cert_path }}/ca_key.pem
+    -CAcreateserial
+    -out {{ cert_path }}/client_cert.pem
+    -extfile {{ cert_path }}/client_extfile.cnf"
+
+- name: set private key permissions
+  file:
+    path: "{{ item }}"
+    mode: 0400
+  with_items:
+      - "{{ cert_path }}/ca_key.pem"
+      - "{{ cert_path }}/server_key.pem"
+      - "{{ cert_path }}/client_key.pem"
+
+- name: set certificate permissions
+  file:
+    path: "{{ item }}"
+    mode: 0444
+  with_items:
+      - "{{ cert_path }}/ca_cert.pem"
+      - "{{ cert_path }}/server_cert.pem"
+      - "{{ cert_path }}/client_cert.pem"
+
+- name: cleanup unneeded files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ cert_path }}/server.csr"
+    - "{{ cert_path }}/client.csr"
+    - "{{ cert_path }}/server_extfile.cnf"
+    - "{{ cert_path }}/client_extfile.cnf"

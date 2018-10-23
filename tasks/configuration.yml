@@ -41,8 +41,30 @@
     - ansible_os_family == 'RedHat'
     - docker_register_sysconfig_storage_setup_template.changed
 
+- name: create docker systemd folder
+  file:
+    path: /etc/systemd/system/docker.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: docker_daemon_remote_access_tls == true
+
+- name: override docker systemd unit
+  template:
+    src: etc/systemd/system/docker.service.d/override.conf.j2
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: docker_daemon_remote_access_tls == true
+
+- name: reload systemd
+  systemd: daemon_reload=yes
+  when: docker_daemon_remote_access_tls == true
+
 - name: start and enable docker service
   service:
     name: '{{ docker_service }}'
     enabled: yes
-    state: started
+    state: restarted
