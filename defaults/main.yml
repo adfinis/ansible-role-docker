@@ -19,6 +19,6 @@ client_common_name: client
 ca_country: CH
 ca_state_or_province: Bern
 ca_locality: Bern
-ca_organization: Adfinis Sygroup
+ca_organization: Example
 ca_organizational_unit: SYS
-ca_email_address: root@adfinis-sygroup.ch
+ca_email_address: root@example.com
