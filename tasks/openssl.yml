@@ -23,8 +23,9 @@
   args:
     creates: "{{ cert_path }}/server_key.pem"
 
-- stat: path="{{ cert_path }}/server_cert.pem"
-  register: server_cert
+- name: looking for server cert
+  stat: path="{{ cert_path }}/server_cert.pem"
+  register: docker_register_server_cert
 
 - name: create servers certificate signing request
   command: "openssl req -subj /CN={{ common_name }} -sha256 -new -key {{ cert_path }}/server_key.pem -out {{ cert_path }}/server.csr"
@@ -46,8 +47,9 @@
   args:
     creates: "{{ cert_path }}/client_key.pem"
 
-- stat: path="{{ cert_path }}/client_cert.pem"
-  register: client_cert
+- name: looking for client cert
+  stat: path="{{ cert_path }}/client_cert.pem"
+  register: docker_register_client_cert
 
 - name: create clients certificate signing request
   command: "openssl req -subj /CN={{ client_common_name }} -new -key {{ cert_path }}/client_key.pem -out {{ cert_path }}/client.csr"
