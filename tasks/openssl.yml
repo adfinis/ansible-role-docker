@@ -24,23 +24,26 @@
     creates: "{{ cert_path }}/server_key.pem"
 
 - name: looking for server cert
-  stat: path="{{ cert_path }}/server_cert.pem"
+  stat:
+    path: "{{ cert_path }}/server_cert.pem"
   register: docker_register_server_cert
 
 - name: create servers certificate signing request
   command: "openssl req -subj /CN={{ common_name }} -sha256 -new -key {{ cert_path }}/server_key.pem -out {{ cert_path }}/server.csr"
-  when: server_cert.stat.exists == False
+  when: docker_register_server_cert.stat.exists == False
 
 - name: write server_extfile.cnf
   template:
     src: etc/openssl/server_extfile.cnf.j2
     dest: "{{ cert_path }}/server_extfile.cnf"
-  when: server_cert.stat.exists == False
+  when: docker_register_server_cert.stat.exists == False
 
 - name: create signed server certificate
   command: "openssl x509 -req -days 365 -in {{ cert_path }}/server.csr -CA {{ cert_path }}/ca_cert.pem -CAkey {{ cert_path }}/ca_key.pem -CAcreateserial -out {{ cert_path }}/server_cert.pem -extfile {{ cert_path }}/server_extfile.cnf"
   args:
     creates: "{{ cert_path }}/server_cert.pem"
+  notify:
+    - docker  daemon restart and systemd reload
 
 - name: create client private key
   command: "openssl genrsa -out {{ cert_path }}/client_key.pem 4096"
@@ -48,18 +51,19 @@
     creates: "{{ cert_path }}/client_key.pem"
 
 - name: looking for client cert
-  stat: path="{{ cert_path }}/client_cert.pem"
+  stat:
+    path: "{{ cert_path }}/client_cert.pem"
   register: docker_register_client_cert
 
 - name: create clients certificate signing request
   command: "openssl req -subj /CN={{ client_common_name }} -new -key {{ cert_path }}/client_key.pem -out {{ cert_path }}/client.csr"
-  when: client_cert.stat.exists == False
+  when: docker_register_client_cert.stat.exists == False
 
 - name: write client_extfile.cnf
   template:
     src: etc/openssl/client_extfile.cnf.j2
     dest: "{{ cert_path }}/client_extfile.cnf"
-  when: client_cert.stat.exists == False
+  when: docker_register_client_cert.stat.exists == False
 
 - name:  create signed client certificate
   command: "openssl x509 -req -days 365 -in {{ cert_path }}/client.csr -CA {{ cert_path }}/ca_cert.pem -CAkey {{ cert_path }}/ca_key.pem -CAcreateserial -out {{ cert_path }}/client_cert.pem -extfile {{ cert_path }}/client_extfile.cnf"

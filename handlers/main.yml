@@ -1,1 +1,7 @@
 ---
+
+- name: docker  daemon restart and systemd reload
+  systemd:
+    name: docker
+    state: restarted
+    daemon_reload: yes
