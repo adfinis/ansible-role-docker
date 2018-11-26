@@ -43,7 +43,7 @@
   args:
     creates: "{{ cert_path }}/server_cert.pem"
   notify:
-    - docker  daemon restart and systemd reload
+    - docker daemon restart and systemd reload
 
 - name: create client private key
   command: "openssl genrsa -out {{ cert_path }}/client_key.pem 4096"
