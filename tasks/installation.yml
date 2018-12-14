@@ -22,3 +22,14 @@
   package:
     name: '{{ docker_packages }}'
     state: present
+
+- name: add cleanup cronjob
+  cron:
+    name: Docker Cleanup
+    minute: '{{ docker_cleanup_cronjob_minute }}'
+    hour: '{{ docker_cleanup_cronjob_hour }}'
+    day: '{{ docker_cleanup_cronjob_day }}'
+    month: '{{ docker_cleanup_cronjob_month }}'
+    weekday: '{{ docker_cleanup_cronjob_weekday }}'
+    job: docker system prune -af
+  when: docker_cleanup_cronjob_enable
