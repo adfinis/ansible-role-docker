@@ -15,6 +15,12 @@
     - 'role::docker'
     - 'role::docker:install'
 
+- import_tasks: openssl.yml
+  tags:
+    - 'role::docker'
+    - 'role::docker:openssl'
+  when: docker_daemon_remote_access_tls
+
 - import_tasks: configuration.yml
   tags:
     - 'role::docker'

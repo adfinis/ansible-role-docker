@@ -1,0 +1,99 @@
+---
+
+- name: create certificate directory structure
+  file:
+    path: "{{ docker_cert_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: create ca private key
+  command: "openssl genrsa -out {{ docker_cert_path }}/ca_key.pem 4096"
+  args:
+    creates: "{{ docker_cert_path }}/ca_key.pem"
+
+- name: create ca certificate
+  command: "openssl req -new -x509 -days 365 -key {{ docker_cert_path }}/ca_key.pem -out {{ docker_cert_path }}/ca_cert.pem -subj \"/C={{ docker_ca_country }}/ST={{ docker_ca_state_or_province }}/L={{ docker_ca_locality }}/O={{ docker_ca_organization }}/OU={{ docker_ca_organizational_unit }}/CN={{ docker_common_name }}/emailAddress={{ docker_ca_email_address }}\""
+  args:
+    creates: "{{ docker_cert_path }}/ca_cert.pem"
+
+- name: create server private key
+  command: "openssl genrsa -out {{ docker_cert_path }}/server_key.pem 4096"
+  args:
+    creates: "{{ docker_cert_path }}/server_key.pem"
+
+- name: looking for server cert
+  stat:
+    path: "{{ docker_cert_path }}/server_cert.pem"
+  register: docker_register_server_cert
+
+- name: create servers certificate signing request
+  command: "openssl req -subj /CN={{ docker_common_name }} -sha256 -new -key {{ docker_cert_path }}/server_key.pem -out {{ docker_cert_path }}/server.csr"
+  when: not docker_register_server_cert.stat.exists
+
+- name: write server_extfile.cnf
+  template:
+    src: etc/openssl/server_extfile.cnf.j2
+    dest: "{{ docker_cert_path }}/server_extfile.cnf"
+  when: not docker_register_server_cert.stat.exists
+
+- name: create signed server certificate
+  command: "openssl x509 -req -days 365 -in {{ docker_cert_path }}/server.csr -CA {{ docker_cert_path }}/ca_cert.pem -CAkey {{ docker_cert_path }}/ca_key.pem -CAcreateserial -out {{ docker_cert_path }}/server_cert.pem -extfile {{ docker_cert_path }}/server_extfile.cnf"
+  args:
+    creates: "{{ docker_cert_path }}/server_cert.pem"
+  notify:
+    - docker daemon restart and systemd reload
+
+- name: create client private key
+  command: "openssl genrsa -out {{ docker_cert_path }}/client_key.pem 4096"
+  args:
+    creates: "{{ docker_cert_path }}/client_key.pem"
+
+- name: looking for client cert
+  stat:
+    path: "{{ docker_cert_path }}/client_cert.pem"
+  register: docker_register_client_cert
+
+- name: create clients certificate signing request
+  command: "openssl req -subj /CN={{ docker_client_common_name }} -new -key {{ docker_cert_path }}/client_key.pem -out {{ docker_cert_path }}/client.csr"
+  when: not docker_register_client_cert.stat.exists
+
+- name: write client_extfile.cnf
+  template:
+    src: etc/openssl/client_extfile.cnf.j2
+    dest: "{{ docker_cert_path }}/client_extfile.cnf"
+  when: not docker_register_client_cert.stat.exists
+
+- name:  create signed client certificate
+  command: "openssl x509 -req -days 365 -in {{ docker_cert_path }}/client.csr -CA {{ docker_cert_path }}/ca_cert.pem -CAkey {{ docker_cert_path }}/ca_key.pem -CAcreateserial -out {{ docker_cert_path }}/client_cert.pem -extfile {{ docker_cert_path }}/client_extfile.cnf"
+  args:
+    creates: "{{ docker_cert_path }}/client_cert.pem"
+
+- name: set private key permissions
+  file:
+    path: "{{ item }}"
+    mode: 0400
+  with_items:
+      - "{{ docker_cert_path }}/ca_key.pem"
+      - "{{ docker_cert_path }}/server_key.pem"
+      - "{{ docker_cert_path }}/client_key.pem"
+
+- name: set certificate permissions
+  file:
+    path: "{{ item }}"
+    mode: 0444
+  with_items:
+      - "{{ docker_cert_path }}/ca_cert.pem"
+      - "{{ docker_cert_path }}/server_cert.pem"
+      - "{{ docker_cert_path }}/client_cert.pem"
+
+- name: cleanup unneeded files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ docker_cert_path }}/server.csr"
+    - "{{ docker_cert_path }}/client.csr"
+    - "{{ docker_cert_path }}/server_extfile.cnf"
+    - "{{ docker_cert_path }}/client_extfile.cnf"
