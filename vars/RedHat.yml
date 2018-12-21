@@ -19,3 +19,5 @@ docker_lv_name: LVDOCKER
 docker_lv_size: 100%FREE
 
 docker_lv_mount: /var/lib/docker
+
+docker_cert_path: /etc/pki/docker

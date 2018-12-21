@@ -6,19 +6,16 @@ docker_storage_device: ~
 # docker daemon remote access
 docker_daemon_remote_access_tls: false
 
-# openssl certs path
-cert_path: /root/ssl_docker
-
 # docker daemon hostname (FQDN)
-common_name: '{{ ansible_fqdn }}'
+docker_common_name: '{{ ansible_fqdn }}'
 
 # docker client hostname
-client_common_name: client
+docker_client_common_name: client
 
 # CA cert informations
-ca_country: CH
-ca_state_or_province: Bern
-ca_locality: Bern
-ca_organization: Example
-ca_organizational_unit: SYS
-ca_email_address: root@example.com
+docker_ca_country: CH
+docker_ca_state_or_province: Bern
+docker_ca_locality: Bern
+docker_ca_organization: Example
+docker_ca_organizational_unit: SYS
+docker_ca_email_address: root@example.com
