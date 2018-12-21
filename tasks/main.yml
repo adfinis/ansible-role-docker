@@ -19,7 +19,7 @@
   tags:
     - 'role::docker'
     - 'role::docker:openssl'
-  when: docker_daemon_remote_access_tls == true
+  when: docker_daemon_remote_access_tls
 
 - import_tasks: configuration.yml
   tags:

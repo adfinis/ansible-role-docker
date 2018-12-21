@@ -30,13 +30,13 @@
 
 - name: create servers certificate signing request
   command: "openssl req -subj /CN={{ docker_common_name }} -sha256 -new -key {{ docker_cert_path }}/server_key.pem -out {{ docker_cert_path }}/server.csr"
-  when: docker_register_server_cert.stat.exists == False
+  when: not docker_register_server_cert.stat.exists
 
 - name: write server_extfile.cnf
   template:
     src: etc/openssl/server_extfile.cnf.j2
     dest: "{{ docker_cert_path }}/server_extfile.cnf"
-  when: docker_register_server_cert.stat.exists == False
+  when: not docker_register_server_cert.stat.exists
 
 - name: create signed server certificate
   command: "openssl x509 -req -days 365 -in {{ docker_cert_path }}/server.csr -CA {{ docker_cert_path }}/ca_cert.pem -CAkey {{ docker_cert_path }}/ca_key.pem -CAcreateserial -out {{ docker_cert_path }}/server_cert.pem -extfile {{ docker_cert_path }}/server_extfile.cnf"
@@ -57,13 +57,13 @@
 
 - name: create clients certificate signing request
   command: "openssl req -subj /CN={{ docker_client_common_name }} -new -key {{ docker_cert_path }}/client_key.pem -out {{ docker_cert_path }}/client.csr"
-  when: docker_register_client_cert.stat.exists == False
+  when: not docker_register_client_cert.stat.exists
 
 - name: write client_extfile.cnf
   template:
     src: etc/openssl/client_extfile.cnf.j2
     dest: "{{ docker_cert_path }}/client_extfile.cnf"
-  when: docker_register_client_cert.stat.exists == False
+  when: not docker_register_client_cert.stat.exists
 
 - name:  create signed client certificate
   command: "openssl x509 -req -days 365 -in {{ docker_cert_path }}/client.csr -CA {{ docker_cert_path }}/ca_cert.pem -CAkey {{ docker_cert_path }}/ca_key.pem -CAcreateserial -out {{ docker_cert_path }}/client_cert.pem -extfile {{ docker_cert_path }}/client_extfile.cnf"
