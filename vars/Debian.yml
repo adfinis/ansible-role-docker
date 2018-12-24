@@ -16,3 +16,5 @@ docker_packages:
 docker_service: docker
 
 docker_daemon_configuration: /etc/docker/daemon.json
+
+docker_cert_path: /etc/ssl/docker

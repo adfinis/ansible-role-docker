@@ -20,4 +20,4 @@ galaxy_info:
         - 7
   galaxy_tags:
     - docker
-    - docker-ce
+    - ce
