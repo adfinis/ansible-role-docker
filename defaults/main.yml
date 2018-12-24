@@ -2,3 +2,13 @@
 
 # Specify what volume to put the docker vg on EL systems
 docker_storage_device: ~
+
+# Default cronjob to let docker prune run all 7 days at sunday morning
+docker_cleanup_cronjob_minute: 0
+docker_cleanup_cronjob_hour: 7
+docker_cleanup_cronjob_day: '*'
+docker_cleanup_cronjob_month: '*'
+docker_cleanup_cronjob_weekday: 0
+
+# Whether the cleanup cronjob is enabled or not
+docker_cleanup_cronjob_enable: false
