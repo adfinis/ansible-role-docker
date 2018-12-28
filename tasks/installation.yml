@@ -32,4 +32,6 @@
     month: '{{ docker_cleanup_cronjob_month }}'
     weekday: '{{ docker_cleanup_cronjob_weekday }}'
     job: docker system prune -af
+    cron_file: ansible_docker_prune
+    user: root
   when: docker_cleanup_cronjob_enable
