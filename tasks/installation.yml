@@ -35,4 +35,3 @@
     cron_file: ansible_docker_prune
     user: root
   when: docker_cleanup_cronjob_enable
-
