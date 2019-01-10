@@ -6,7 +6,7 @@ ROLE DOCKER
   :target: https://github.com/adfinis-sygroup/ansible-role-docker/blob/master/LICENSE
 
 .. image:: https://img.shields.io/travis/adfinis-sygroup/ansible-role-docker.svg?style=flat-square
-  :target: https://github.com/adfinis-sygroup/ansible-role-docker
+  :target: https://travis-ci.org/adfinis-sygroup/ansible-role-docker
 
 .. image:: https://img.shields.io/badge/galaxy-adfinis--sygroup.docker-660198.svg?style=flat-square
   :target: https://galaxy.ansible.com/adfinis-sygroup/docker
