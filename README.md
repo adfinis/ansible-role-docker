@@ -5,7 +5,6 @@ ROLE DOCKER
 
 [![image](https://img.shields.io/github/workflow/status/adfinis-sygroup/ansible-role-docker/CI%20-%20Linting?style=flat-square)](https://github.com/adfinis-sygroup/ansible-role-docker/actions)
 
-
 [![image](https://img.shields.io/badge/galaxy-adfinis--sygroup.docker-660198.svg?style=flat-square)](https://galaxy.ansible.com/adfinis-sygroup/docker)
 
 A brief description of the role goes here.
