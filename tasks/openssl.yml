@@ -65,7 +65,7 @@
     dest: "{{ docker_cert_path }}/client_extfile.cnf"
   when: not docker_register_client_cert.stat.exists
 
-- name:  create signed client certificate
+- name: create signed client certificate
   command: "openssl x509 -req -days 365 -in {{ docker_cert_path }}/client.csr -CA {{ docker_cert_path }}/ca_cert.pem -CAkey {{ docker_cert_path }}/ca_key.pem -CAcreateserial -out {{ docker_cert_path }}/client_cert.pem -extfile {{ docker_cert_path }}/client_extfile.cnf"
   args:
     creates: "{{ docker_cert_path }}/client_cert.pem"
@@ -75,18 +75,18 @@
     path: "{{ item }}"
     mode: 0400
   with_items:
-      - "{{ docker_cert_path }}/ca_key.pem"
-      - "{{ docker_cert_path }}/server_key.pem"
-      - "{{ docker_cert_path }}/client_key.pem"
+    - "{{ docker_cert_path }}/ca_key.pem"
+    - "{{ docker_cert_path }}/server_key.pem"
+    - "{{ docker_cert_path }}/client_key.pem"
 
 - name: set certificate permissions
   file:
     path: "{{ item }}"
     mode: 0444
   with_items:
-      - "{{ docker_cert_path }}/ca_cert.pem"
-      - "{{ docker_cert_path }}/server_cert.pem"
-      - "{{ docker_cert_path }}/client_cert.pem"
+    - "{{ docker_cert_path }}/ca_cert.pem"
+    - "{{ docker_cert_path }}/server_cert.pem"
+    - "{{ docker_cert_path }}/client_cert.pem"
 
 - name: cleanup unneeded files
   file:

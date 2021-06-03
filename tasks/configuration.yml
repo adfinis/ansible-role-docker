@@ -25,18 +25,18 @@
 
 - name: perform docker storage setup
   block:
-  - name: stop docker to run storage setup
-    service:
-      name: '{{ docker_service }}'
-      state: stopped
+    - name: stop docker to run storage setup
+      service:
+        name: '{{ docker_service }}'
+        state: stopped
 
-  - name: run docker-storage-setup
-    command: docker-storage-setup
+    - name: run docker-storage-setup
+      command: docker-storage-setup
 
-  - name: start docker after storage setup
-    service:
-      name: '{{ docker_service }}'
-      state: started
+    - name: start docker after storage setup
+      service:
+        name: '{{ docker_service }}'
+        state: started
   when:
     - ansible_os_family == 'RedHat'
     - docker_register_sysconfig_storage_setup_template.changed
