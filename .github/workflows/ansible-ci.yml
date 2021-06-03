@@ -36,4 +36,3 @@ jobs:
         with:
           yamllint_config_filepath: docker/.testenv/yamllint.yml
           yamllint_file_or_dir: docker
-
