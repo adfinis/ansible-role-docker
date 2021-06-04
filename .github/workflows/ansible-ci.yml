@@ -1,0 +1,38 @@
+---
+name: CI - Linting
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # This workflow contains a single job called "build"
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: docker
+
+      # Checkout Adfinis lint-rules
+      - uses: actions/checkout@v2
+        with:
+          repository: adfinis-sygroup/ansible-lint-rules
+          path: lint-rules
+
+      - name: ansible-lint
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: docker
+          args: "-R -r lint-rules"
+          override-deps: |
+            ansible~=2.10
+            ansible-lint~=5.0
+      - name: yamllint
+        uses: karancode/yamllint-github-action@v2.0.0
+        with:
+          yamllint_config_filepath: docker/.testenv/yamllint.yml
+          yamllint_file_or_dir: docker

@@ -8,4 +8,8 @@ rules:
   brackets: disable
   truthy: disable
 
+ignore: |
+  README.md
+  LICENSE
+
 # vim: set ts=2 sw=2 tw=2 :

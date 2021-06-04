@@ -3,7 +3,7 @@ ROLE DOCKER
 
 [![image](https://img.shields.io/github/license/adfinis-sygroup/ansible-role-docker.svg?style=flat-square)](https://github.com/adfinis-sygroup/ansible-role-docker/blob/master/LICENSE)
 
-[![image](https://img.shields.io/travis/adfinis-sygroup/ansible-role-docker.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/ansible-role-docker)
+[![image](https://img.shields.io/github/workflow/status/adfinis-sygroup/ansible-role-docker/CI%20-%20Linting?style=flat-square)](https://github.com/adfinis-sygroup/ansible-role-docker/actions)
 
 [![image](https://img.shields.io/badge/galaxy-adfinis--sygroup.docker-660198.svg?style=flat-square)](https://galaxy.ansible.com/adfinis-sygroup/docker)
 
